@@ -60,3 +60,6 @@
 
 ### 3.0.63
 * Added a changelog, which will be used to describe changes to both transactional and marketing client libraries.
+
+### 3.0.81
+* Updated superagent to latest

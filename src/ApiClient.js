@@ -462,23 +462,21 @@ exports.prototype.callApi = function callApi(path, httpMethod, pathParams,
     }
   }
 
-  return new Promise(function(resolve, reject) {
-    request.end(function(error, response) {
-      if (error) {
-        reject(error);
-      } else {
+  return request
+    .then(response => {
         try {
           var data = _this.deserialize(response, returnType);
           if (_this.enableCookies && typeof window === 'undefined'){
             _this.agent.saveCookies(response);
           }
-          resolve({data: data, response: response});
+          return { data: data, response: response };
         } catch (err) {
-          reject(err);
+          throw err;
         }
-      }
-    });
-  });
+    })
+    .catch(error => {
+      throw error
+    })
   };
 
 /**
@@ -559,6 +557,7 @@ exports.convertToType = function(data, type) {
  * Constructs a new map or array model from REST data.
  * @param data {Object|Array} The REST data.
  * @param obj {Object|Array} The target object or array.
+ * @param itemType {(String|Array.<String>|Object.<String, Object>|Function)}
  */
 exports.constructFromObject = function(data, obj, itemType) {
   if (Array.isArray(data)) {
